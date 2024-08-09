@@ -113,6 +113,13 @@ public class RequestValidate {
         }
     }
 
+    // pageNo, pageSize
+    public void isValidPageNum(int num) {
+        // 1 이상의 숫자인지 확인
+        if(num < 1) {
+            throw new CustomException(ErrorCode.INVALID_PAGE_NUM);
+        }
+    }
 
 //    public void isValidSearchDt(String searchDt) {
 //        //yyyy-mm-dd 형식인지 확인

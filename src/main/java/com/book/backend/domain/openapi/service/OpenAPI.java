@@ -2,16 +2,13 @@ package com.book.backend.domain.openapi.service;
 
 import com.book.backend.domain.openapi.dto.request.OpenAPIRequestInterface;
 import com.book.backend.domain.openapi.dto.response.OpenAPIResponseInterface;
+import com.book.backend.exception.CustomException;
+import com.book.backend.exception.ErrorCode;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,7 +60,12 @@ public class OpenAPI {
 
         // response JSON 파싱
         JSONObject jsonObject = (JSONObject) (new JSONParser()).parse(fullResponse);
-        return (JSONObject) jsonObject.get("response");
+        JSONObject response = (JSONObject) jsonObject.get("response");
+        // API 일일 호출 횟수 초과 에러 (일 최대 500건)
+        if(response.get("error") != null){
+            throw new CustomException(ErrorCode.API_CALL_LIMIT_EXCEEDED);
+        }
+        return response;
     }
 }
 
